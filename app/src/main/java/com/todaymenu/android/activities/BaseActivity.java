@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.todaymenu.android.fragments.BaseFragment;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -32,5 +34,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    protected BaseFragment setFragment(int id, BaseFragment baseFragment) {
+        getSupportFragmentManager().beginTransaction().replace(id, baseFragment).commit();
+        return baseFragment;
     }
 }

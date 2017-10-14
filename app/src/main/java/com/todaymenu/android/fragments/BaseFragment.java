@@ -1,8 +1,15 @@
 package com.todaymenu.android.fragments;
 
+import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
@@ -10,7 +17,7 @@ import butterknife.Unbinder;
  * @since 2017.08.30
  */
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     protected Unbinder mUnbinder;
 
@@ -25,5 +32,17 @@ public class BaseFragment extends Fragment {
 
     protected void showMessage(int message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    abstract
+    @LayoutRes
+    int getLayoutId();
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(getLayoutId(), container, false);
+        mUnbinder = ButterKnife.bind(this, view);
+        return view;
     }
 }

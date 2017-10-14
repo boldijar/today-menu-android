@@ -3,8 +3,10 @@
 
     <!-- empty layout -->
     <string name="retry">Retry</string>
+    <string name="unexpected_error">An error occurred :(</string>
 
     <!-- home -->
     <string name="map">Map</string>
+    <string name="view_full_offer">view full offer</string>
 
 </resources>

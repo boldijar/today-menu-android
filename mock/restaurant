@@ -7,7 +7,7 @@
   "address": "Iuliu Maniu 1",
   "phone": "0747331293",
   "website": "www.kfc.org",
-  menus: [
+  "menus": [
     {
       "price": "13 RON",
       "name": "Varianta 1",

@@ -1,6 +1,7 @@
 package com.todaymenu.android.di;
 
 import com.todaymenu.android.Shaorma;
+import com.todaymenu.android.mvp.presenter.RestaurantsPresenter;
 import com.todaymenu.android.mvp.presenter.SamplePresenter;
 
 import dagger.Component;
@@ -12,4 +13,5 @@ public interface ApplicationComponent {
 
     void inject(SamplePresenter samplePresenter);
 
+    void inject(RestaurantsPresenter restaurantsPresenter);
 }

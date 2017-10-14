@@ -18,7 +18,7 @@
         tools:text="No content found!"
         tools:visibility="visible"/>
 
-    <TextView
+    <Button
         android:id="@+id/empty_layout_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
