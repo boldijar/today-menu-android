@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Today menu</string>
+
+    <!-- empty layout -->
+    <string name="retry">Retry</string>
+
+    <!-- home -->
+    <string name="map">Map</string>
+
+</resources>
