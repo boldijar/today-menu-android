@@ -1,0 +1,34 @@
+[
+  {
+    "cover_url": "https://cdn.woocoupons.in/img/store_des_images/kfc-cover-544x224.jpeg",
+    "name": "KFC Centru",
+    "details": "Meat burger\nCoca Cola\nChips",
+    "latitude": 46.7702092,
+    "longitude": 23.5883546,
+    "id": 12
+  },
+  {
+    "cover_url": "https://image.slidesharecdn.com/kfc-151020142623-lva1-app6892/95/kfc-marketing-strategies-2-638.jpg?cb=1445351262",
+    "name": "KFC Iulius",
+    "details": "Pizza\nCoca Cola\nKetchup\nMustard",
+    "latitude": 46.772871,
+    "longitude": 23.6262998,
+    "id": 13
+  },
+  {
+    "cover_url": "http://www.restoaparis.com/photos-panoramique/marty-panoramique/$file/marty-panoramique.jpg",
+    "name": "Marty",
+    "details": "Meat burger\nCoca Cola\nChips\nSurprize between 10:00 and 18:00!",
+    "latitude": 46.769484,
+    "longitude": 23.6099793,
+    "id": 14
+  },
+  {
+    "cover_url": "https://www.ziardecluj.ro/sites/default/files/styles/large/public/media/image/2014/02/panmera-9_0.jpg?itok=Xu1pnKOJ",
+    "name": "Panemar",
+    "details": "Pig burger\nZuzu 200ML\nSalad",
+    "latitude": 46.766139,
+    "longitude": 23.5977219,
+    "id": 15
+  }
+]
