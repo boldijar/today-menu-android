@@ -24,7 +24,7 @@ public class RestaurantsListFragment extends BaseRestaurantsFragment {
     @BindView(R.id.restaurants_list_recycler)
     RecyclerView mRecyclerView;
 
-    private RestaurantsAdapter mRestaurantsAdapter = new RestaurantsAdapter();
+    private RestaurantsAdapter mRestaurantsAdapter;
 
     @Override
     int getLayoutId() {
@@ -33,6 +33,7 @@ public class RestaurantsListFragment extends BaseRestaurantsFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        mRestaurantsAdapter = new RestaurantsAdapter(mRestaurantsListener);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mRestaurantsAdapter);
     }
@@ -41,4 +42,11 @@ public class RestaurantsListFragment extends BaseRestaurantsFragment {
     public void setRestaurants(List<Restaurant> restaurants) {
         mRestaurantsAdapter.setRestaurants(restaurants);
     }
+
+    RestaurantsAdapter.Listener mRestaurantsListener = new RestaurantsAdapter.Listener() {
+        @Override
+        public void onClickedRestaurant(Restaurant restaurant, View cover) {
+            mHomeView.clickedRestaurant(restaurant, cover);
+        }
+    };
 }

@@ -1,5 +1,8 @@
 package com.todaymenu.android.mvp.presenter;
 
+import android.location.Location;
+
+import com.todaymenu.android.data.Prefs;
 import com.todaymenu.android.data.models.Restaurant;
 import com.todaymenu.android.di.InjectionHelper;
 import com.todaymenu.android.di.RetrofitHolder;
@@ -11,6 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -33,6 +37,19 @@ public class RestaurantsPresenter extends Presenter<RestaurantsView> {
         mRetrofitHolder.getApiService().getRestaurants()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<List<Restaurant>, List<Restaurant>>() {
+                    @Override
+                    public List<Restaurant> apply(List<Restaurant> restaurants) throws Exception {
+                        double latitude = Prefs.LastLatitude.getDouble();
+                        double longitude = Prefs.LastLongitude.getDouble();
+                        for (Restaurant restaurant : restaurants) {
+                            float[] result = new float[1];
+                            Location.distanceBetween(latitude, longitude, restaurant.mLatitude, restaurant.mLongitude, result);
+                            restaurant.mDistanceAway = (int) (result[0] / 1000);
+                        }
+                        return restaurants;
+                    }
+                })
                 .subscribe(new MvpObserver<List<Restaurant>>(this) {
                     @Override
                     public void onNext(List<Restaurant> value) {

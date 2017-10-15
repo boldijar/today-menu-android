@@ -2,32 +2,39 @@ package com.todaymenu.android.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.todaymenu.android.R;
 import com.todaymenu.android.data.models.Restaurant;
 import com.todaymenu.android.fragments.BaseRestaurantsFragment;
 import com.todaymenu.android.fragments.RestaurantsListFragment;
+import com.todaymenu.android.fragments.RestaurantsMapFragment;
 import com.todaymenu.android.mvp.presenter.RestaurantsPresenter;
+import com.todaymenu.android.mvp.view.HomeView;
 import com.todaymenu.android.mvp.view.RestaurantsView;
 import com.todaymenu.android.view.EmptyLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Paul
  * @since 2017.08.29
  */
 
-public class HomeActivity extends BaseActivity implements RestaurantsView {
-
+public class HomeActivity extends BaseActivity implements RestaurantsView, HomeView {
 
     public static Intent createIntent(Context context) {
         return new Intent(context, HomeActivity.class);
@@ -39,11 +46,15 @@ public class HomeActivity extends BaseActivity implements RestaurantsView {
     EmptyLayout mEmptyLayout;
     @BindView(R.id.home_container)
     View mContainer;
+    @BindView(R.id.home_fab)
+    FloatingActionButton mFloatingActionButton;
 
     private RestaurantsPresenter mRestaurantsPresenter = new RestaurantsPresenter(this);
     private BaseRestaurantsFragment mBaseRestaurantsFragment;
-
     private RestaurantsListFragment mRestaurantsListFragment = new RestaurantsListFragment();
+    private RestaurantsMapFragment mRestaurantsMapFragment = new RestaurantsMapFragment();
+    private MenuItem mMenu;
+    private List<Restaurant> mRestaurants = new ArrayList<>();
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -51,17 +62,47 @@ public class HomeActivity extends BaseActivity implements RestaurantsView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(null);
 
         mBaseRestaurantsFragment = (BaseRestaurantsFragment) setFragment(R.id.home_container, mRestaurantsListFragment);
 
         mRestaurantsPresenter.loadRestaurants();
+        mEmptyLayout.setOnRetryListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRestaurantsPresenter.loadRestaurants();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
+        mMenu = menu.getItem(0);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() != R.id.action_map) {
+            return true;
+        }
+        boolean showingList = mBaseRestaurantsFragment instanceof RestaurantsListFragment;
+        if (showingList) {
+            mFloatingActionButton.show();
+            mMenu.setIcon(R.drawable.toolbar_list);
+            mMenu.setTitle(R.string.list);
+            mBaseRestaurantsFragment = mRestaurantsMapFragment;
+        } else {
+            mFloatingActionButton.hide();
+            mMenu.setIcon(R.drawable.toolbar_map);
+            mMenu.setTitle(R.string.map);
+            mBaseRestaurantsFragment = mRestaurantsListFragment;
+        }
+        setFragment(R.id.home_container, mBaseRestaurantsFragment);
+        mBaseRestaurantsFragment.setRestaurants(mRestaurants);
         return true;
     }
 
@@ -70,6 +111,7 @@ public class HomeActivity extends BaseActivity implements RestaurantsView {
         mContainer.setVisibility(View.VISIBLE);
         mEmptyLayout.setState(EmptyLayout.State.CLEAR);
         mBaseRestaurantsFragment.setRestaurants(restaurants);
+        mRestaurants = restaurants;
     }
 
     @Override
@@ -93,5 +135,29 @@ public class HomeActivity extends BaseActivity implements RestaurantsView {
     protected void onDestroy() {
         super.onDestroy();
         mRestaurantsPresenter.destroySubscriptions();
+    }
+
+    @OnClick(R.id.home_fab)
+    void onFabClicked() {
+        if (mBaseRestaurantsFragment instanceof RestaurantsMapFragment) {
+            RestaurantsMapFragment restaurantsMapFragment = (RestaurantsMapFragment) mBaseRestaurantsFragment;
+            restaurantsMapFragment.zoomToCurrentPosition();
+        }
+    }
+
+    @Override
+    public void clickedRestaurant(Restaurant restaurant) {
+        startActivity(RestaurantActivity.createIntent(this, restaurant));
+    }
+
+    @Override
+    public void clickedRestaurant(Restaurant restaurant, View imageView) {
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, imageView, "cover");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            startActivity(RestaurantActivity.createIntent(this, restaurant), options.toBundle());
+        } else {
+            clickedRestaurant(restaurant);
+        }
     }
 }

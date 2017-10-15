@@ -17,6 +17,10 @@
             android:label="@null"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activities.RestaurantActivity"
+            android:label="@null"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionbar">
@@ -28,8 +32,12 @@
         </activity>
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="e33d3251e67a6a3b27de3e33de63c25bc0e67a78"/>
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
 
     </application>
 

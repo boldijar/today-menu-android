@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 
 public enum Prefs {
 
+    LastLatitude("46.7631338"),
+    LastLongitude("23.5745799"),
     TokenPref;
 
     Prefs(String defaultValue) {
@@ -37,6 +39,18 @@ public enum Prefs {
             sSharedPreferences.edit().putString(name(), value + "").commit();
         } else {
             sSharedPreferences.edit().putString(name(), null).commit();
+        }
+    }
+
+    public double getDouble() {
+        String value = get();
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Double.valueOf(value);
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 

@@ -6,7 +6,9 @@
     <string name="unexpected_error">An error occurred :(</string>
 
     <!-- home -->
-    <string name="map">Map</string>
+    <string name="map">View as map</string>
+    <string name="list">View as list</string>
     <string name="view_full_offer">view full offer</string>
+    <string name="google_maps_key">AIzaSyDholMFgivDfyOEWghlkXucEUBxoZcW3zE</string>
 
 </resources>

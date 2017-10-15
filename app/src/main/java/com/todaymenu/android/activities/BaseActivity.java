@@ -37,7 +37,10 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected BaseFragment setFragment(int id, BaseFragment baseFragment) {
-        getSupportFragmentManager().beginTransaction().replace(id, baseFragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(id, baseFragment).commit();
         return baseFragment;
     }
 }

@@ -24,6 +24,7 @@
             <ImageView
                 android:id="@+id/restaurant_cover"
                 android:layout_width="match_parent"
+                android:transitionName="cover"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/splash_icon"/>
@@ -46,7 +47,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
                 android:alpha=".6"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 tools:text="Meat burger\nCoca Cola\nChips"/>
 
             <View

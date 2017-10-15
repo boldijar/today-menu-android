@@ -27,6 +27,11 @@ import butterknife.ButterKnife;
 public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.RestaurantsHolder> {
 
     private List<Restaurant> mRestaurants = new ArrayList<>();
+    private final Listener mListener;
+
+    public RestaurantsAdapter(Listener listener) {
+        mListener = listener;
+    }
 
     public void setRestaurants(List<Restaurant> restaurants) {
         mRestaurants = restaurants;
@@ -39,12 +44,22 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(RestaurantsHolder holder, int position) {
-        Restaurant restaurant = mRestaurants.get(position);
+    public void onBindViewHolder(final RestaurantsHolder holder, int position) {
+        final Restaurant restaurant = mRestaurants.get(position);
         Glide.with(holder.mCover.getContext()).load(restaurant.mCoverUrl).into(holder.mCover);
         holder.mDescription.setText(restaurant.mDetails);
         holder.mTitle.setText(restaurant.mName);
-        holder.mDistance.setText((int) (Math.random() * 100) + " km away");
+        if (restaurant.mDistanceAway != 0) {
+            holder.mDistance.setText(restaurant.mDistanceAway + " km away");
+        } else {
+            holder.mDistance.setText(null);
+        }
+        holder.mViewOffer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onClickedRestaurant(restaurant, holder.mCover);
+            }
+        });
     }
 
     @Override
@@ -62,10 +77,16 @@ public class RestaurantsAdapter extends RecyclerView.Adapter<RestaurantsAdapter.
         TextView mDistance;
         @BindView(R.id.restaurant_title)
         TextView mTitle;
+        @BindView(R.id.restaurant_view_offer)
+        View mViewOffer;
 
         public RestaurantsHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface Listener {
+        void onClickedRestaurant(Restaurant restaurant, View cover);
     }
 }
