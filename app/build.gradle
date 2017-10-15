@@ -20,27 +20,9 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    signingConfigs {
-        debug {
-            storePassword '*3Wi|T7!E=kwyRi2g;v)4=CI'
-            keyAlias 'alias'
-            keyPassword 'iKErZ{wr)-|tsh:sW48f(\\eJ'
-            storeFile file("$rootProject.projectDir/keys/release.jks")
-        }
+    buildTypes {
 
         release {
-            storePassword '*3Wi|T7!E=kwyRi2g;v)4=CI'
-            keyAlias 'alias'
-            keyPassword 'iKErZ{wr)-|tsh:sW48f(\\eJ'
-            storeFile file("$rootProject.projectDir/keys/release.jks")
-        }
-    }
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
-        release {
-            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -73,4 +55,5 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0-beta1"
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
 }

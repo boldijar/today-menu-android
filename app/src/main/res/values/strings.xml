@@ -11,4 +11,8 @@
     <string name="view_full_offer">view full offer</string>
     <string name="google_maps_key">AIzaSyDholMFgivDfyOEWghlkXucEUBxoZcW3zE</string>
 
+    <!-- details -->
+    <string name="call">Call</string>
+    <string name="choose_app">Select an application</string>
+
 </resources>

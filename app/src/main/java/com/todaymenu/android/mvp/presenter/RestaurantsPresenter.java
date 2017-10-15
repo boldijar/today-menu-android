@@ -63,4 +63,23 @@ public class RestaurantsPresenter extends Presenter<RestaurantsView> {
                     }
                 });
     }
+
+    public void loadRestaurant(int id) {
+        getView().showProgress();
+        mRetrofitHolder.getApiService().getRestaurant()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MvpObserver<Restaurant>(this) {
+                    @Override
+                    public void onNext(Restaurant value) {
+                        getView().showRestaurant(value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        getView().showError();
+                    }
+                });
+    }
 }
