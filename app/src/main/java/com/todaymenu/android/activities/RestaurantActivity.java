@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.SharedElementCallback;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.todaymenu.android.R;
+import com.todaymenu.android.adapters.FoodAdapter;
 import com.todaymenu.android.data.models.Restaurant;
 import com.todaymenu.android.mvp.presenter.RestaurantsPresenter;
 import com.todaymenu.android.mvp.view.RestaurantsView;
@@ -46,9 +50,12 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
     TextView mAddress;
     @BindView(R.id.restaurant_collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.restaurant_recycler)
+    RecyclerView mFoodRecycler;
 
     private Restaurant mRestaurant;
     private RestaurantsPresenter mRestaurantsPresenter;
+    private FoodAdapter mAdapter;
 
     public static Intent createIntent(Context context, Restaurant restaurant) {
         Intent intent = new Intent(context, RestaurantActivity.class);
@@ -67,7 +74,21 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
         ButterKnife.bind(this);
         initToolbar();
         Glide.with(this).load(mRestaurant.mCoverUrl).into(mCover);
+        initList();
         initPresenter();
+        mFoodRecycler.setAlpha(0);
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                mFoodRecycler.animate().setDuration(500).alpha(1).start();
+            }
+        });
+    }
+
+    private void initList() {
+        mFoodRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new FoodAdapter();
+        mFoodRecycler.setAdapter(mAdapter);
     }
 
     private void initPresenter() {
@@ -127,6 +148,7 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
         mEmptyLayout.setState(EmptyLayout.State.CLEAR);
         mRestaurant = restaurant;
         mAddress.setText(mRestaurant.mAddress);
+        mAdapter.setItems(restaurant.mMenus);
     }
 
     @Override

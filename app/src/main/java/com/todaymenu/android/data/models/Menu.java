@@ -11,4 +11,10 @@ public class Menu {
     public String mName;
     @SerializedName("foods")
     public List<Food> mFoods;
+    @SerializedName("extra")
+    public String mExtra;
+
+
+    // non api
+    public String mAllFoods;
 }
