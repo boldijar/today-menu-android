@@ -52,16 +52,44 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHolder> {
     @Override
     public void onBindViewHolder(final FoodHolder holder, int position) {
         final Menu menu = mItems.get(position);
-        Glide.with(holder.mCover.getContext()).load(menu.mFoods.get(0).mImageSmall).into(holder.mCover);
+        if (menu.mFoods != null && menu.mFoods.size() > 0) {
+            if (menu.mThumbnailIndex >= menu.mFoods.size()) {
+                menu.mThumbnailIndex = 0;
+            }
+            Glide.with(holder.mCover.getContext()).load(menu.mFoods.get(menu.mThumbnailIndex).mImageSmall).into(holder.mCover);
+        } else {
+            holder.mCover.setImageDrawable(null);
+        }
         holder.mExtra.setText(menu.mExtra);
         holder.mFoodNameList.setText(menu.mAllFoods);
         holder.mPrice.setText(menu.mPrice);
         holder.mDivider.setVisibility(position < getItemCount() - 1 ? View.VISIBLE : View.INVISIBLE);
+        holder.mFoodName.setText(menu.mName);
     }
 
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    public void timeUpdate(int firstIndex, int lastIndex) {
+        if (mItems.isEmpty()) {
+            return;
+        }
+        for (int i = firstIndex; i <= lastIndex; i++) {
+            Menu menu = mItems.get(i);
+            if (menu.mFoods == null || menu.mFoods.size() == 0) {
+                continue;
+            }
+            int thumbIndex = menu.mThumbnailIndex;
+            if (thumbIndex == menu.mFoods.size() - 1) {
+                thumbIndex = 0;
+            } else {
+                thumbIndex++;
+            }
+            menu.mThumbnailIndex = thumbIndex;
+        }
+        notifyItemRangeChanged(firstIndex, lastIndex - firstIndex + 1);
     }
 
     public static class FoodHolder extends RecyclerView.ViewHolder {
@@ -76,6 +104,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodHolder> {
         TextView mExtra;
         @BindView(R.id.food_divider)
         View mDivider;
+        @BindView(R.id.food_name)
+        TextView mFoodName;
 
         public FoodHolder(View itemView) {
             super(itemView);

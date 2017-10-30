@@ -2,9 +2,7 @@ package com.todaymenu.android.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +12,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.todaymenu.android.R;
 import com.todaymenu.android.data.Prefs;
@@ -22,7 +21,6 @@ import com.todaymenu.android.data.models.Restaurant;
 import java.util.List;
 
 import butterknife.BindView;
-import timber.log.Timber;
 
 /**
  * @author Paul
@@ -35,23 +33,24 @@ public class RestaurantsMapFragment extends BaseRestaurantsFragment implements O
     MapView mMapView;
     private List<Restaurant> mRestaurants;
     private GoogleMap mMap;
+    private GoogleMap.OnInfoWindowClickListener mInfoWindowClickListener = new GoogleMap.OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            if (!(marker.getTag() instanceof Restaurant)) {
+                return;
+            }
+            Restaurant restaurant = (Restaurant) marker.getTag();
+            mHomeView.clickedRestaurant(restaurant);
+        }
+    };
 
     @Override
     int getLayoutId() {
         return R.layout.fragment_restaurants_map;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Timber.e("onCreateView");
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Timber.e("onViewCreated");
-
         MapsInitializer.initialize(getActivity());
         mMapView.onCreate(savedInstanceState);
         mMapView.getMapAsync(this);
@@ -78,8 +77,10 @@ public class RestaurantsMapFragment extends BaseRestaurantsFragment implements O
                     new LatLng(restaurant.mLatitude, restaurant.mLongitude))
                     .title(restaurant.mName)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant_pin));
-            map.addMarker(markerOptions);
+            Marker marker = map.addMarker(markerOptions);
+            marker.setTag(restaurant);
         }
+        mMap.setOnInfoWindowClickListener(mInfoWindowClickListener);
     }
 
     @Override

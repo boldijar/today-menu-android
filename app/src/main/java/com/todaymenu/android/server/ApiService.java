@@ -9,9 +9,9 @@ import retrofit2.http.GET;
 
 public interface ApiService {
 
-    @GET("restaurants.json")
+    @GET("dy9eybugyvelq2i/restaurants.json")
     Observable<List<Restaurant>> getRestaurants();
 
-    @GET("restaurant.json")
+    @GET("ajjr3ikj60sllu9/restaurant.json")
     Observable<Restaurant> getRestaurant();
 }

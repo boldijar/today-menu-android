@@ -10,9 +10,11 @@ import com.todaymenu.android.mvp.view.RestaurantsView;
 import com.todaymenu.android.utils.MvpObserver;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -79,6 +81,18 @@ public class RestaurantsPresenter extends Presenter<RestaurantsView> {
                     public void onError(Throwable e) {
                         super.onError(e);
                         getView().showError();
+                    }
+                });
+    }
+
+    public void startChangeImageTimer() {
+        Observable.interval(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MvpObserver<Long>(this) {
+                    @Override
+                    public void onNext(Long value) {
+                        getView().intervalUpdate();
                     }
                 });
     }

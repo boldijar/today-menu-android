@@ -17,4 +17,5 @@ public class Menu {
 
     // non api
     public String mAllFoods;
+    public int mThumbnailIndex;
 }

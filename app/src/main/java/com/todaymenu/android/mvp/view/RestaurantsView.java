@@ -17,4 +17,6 @@ public interface RestaurantsView {
     void showProgress();
 
     void showError();
+
+    void intervalUpdate();
 }

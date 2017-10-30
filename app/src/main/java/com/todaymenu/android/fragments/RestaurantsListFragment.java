@@ -33,7 +33,9 @@ public class RestaurantsListFragment extends BaseRestaurantsFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mRestaurantsAdapter = new RestaurantsAdapter(mRestaurantsListener);
+        if (mRestaurantsAdapter == null) {
+            mRestaurantsAdapter = new RestaurantsAdapter(mRestaurantsListener);
+        }
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mRestaurantsAdapter);
     }

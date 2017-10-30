@@ -2,6 +2,7 @@ package com.todaymenu.android.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.todaymenu.android.R;
+import com.todaymenu.android.data.Prefs;
 import com.todaymenu.android.data.models.Restaurant;
 import com.todaymenu.android.fragments.BaseRestaurantsFragment;
 import com.todaymenu.android.fragments.RestaurantsListFragment;
@@ -28,6 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
 
 /**
  * @author Paul
@@ -75,6 +80,7 @@ public class HomeActivity extends BaseActivity implements RestaurantsView, HomeV
                 mRestaurantsPresenter.loadRestaurants();
             }
         });
+//        getLocationUpdate();
     }
 
     @Override
@@ -132,6 +138,11 @@ public class HomeActivity extends BaseActivity implements RestaurantsView, HomeV
     }
 
     @Override
+    public void intervalUpdate() {
+        // not used here
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mRestaurantsPresenter.destroySubscriptions();
@@ -147,7 +158,7 @@ public class HomeActivity extends BaseActivity implements RestaurantsView, HomeV
 
     @Override
     public void clickedRestaurant(Restaurant restaurant) {
-        startActivity(RestaurantActivity.createIntent(this, restaurant));
+        startActivity(RestaurantActivity.createIntent(this, restaurant, false));
     }
 
     @Override
@@ -155,9 +166,26 @@ public class HomeActivity extends BaseActivity implements RestaurantsView, HomeV
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(this, imageView, "cover");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            startActivity(RestaurantActivity.createIntent(this, restaurant), options.toBundle());
+            startActivity(RestaurantActivity.createIntent(this, restaurant, true), options.toBundle());
         } else {
             clickedRestaurant(restaurant);
         }
+    }
+
+    public void getLocationUpdate() {
+        SmartLocation.with(this).location()
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+                        Prefs.LastLatitude.put(location.getLatitude());
+                        Prefs.LastLongitude.put(location.getLongitude());
+                        locationUpdated();
+                    }
+                });
+    }
+
+    private void locationUpdated() {
+        Toast.makeText(this, "LOcation was upDaTeD", Toast.LENGTH_SHORT).show();
     }
 }

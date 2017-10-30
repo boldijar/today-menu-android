@@ -39,6 +39,7 @@ import butterknife.OnClick;
 public class RestaurantActivity extends BaseActivity implements RestaurantsView {
 
     private static final String ARG_RESTAURANT = "restaurant";
+    private static final String ARG_ANIMATION = "animation";
 
     @BindView(R.id.restaurant_cover)
     ImageView mCover;
@@ -56,10 +57,12 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
     private Restaurant mRestaurant;
     private RestaurantsPresenter mRestaurantsPresenter;
     private FoodAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
-    public static Intent createIntent(Context context, Restaurant restaurant) {
+    public static Intent createIntent(Context context, Restaurant restaurant, boolean withAnimation) {
         Intent intent = new Intent(context, RestaurantActivity.class);
         intent.putExtra(ARG_RESTAURANT, restaurant);
+        intent.putExtra(ARG_ANIMATION, withAnimation);
         return intent;
     }
 
@@ -76,17 +79,20 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
         Glide.with(this).load(mRestaurant.mCoverUrl).into(mCover);
         initList();
         initPresenter();
-        mFoodRecycler.setAlpha(0);
-        setEnterSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-                mFoodRecycler.animate().setDuration(500).alpha(1).start();
-            }
-        });
+        if (getIntent().getBooleanExtra(ARG_ANIMATION, false)) {
+            mFoodRecycler.setAlpha(0);
+            setEnterSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                    mFoodRecycler.animate().setDuration(500).alpha(1).start();
+                }
+            });
+        }
     }
 
     private void initList() {
-        mFoodRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mLayoutManager = new LinearLayoutManager(this);
+        mFoodRecycler.setLayoutManager(mLayoutManager);
         mAdapter = new FoodAdapter();
         mFoodRecycler.setAdapter(mAdapter);
     }
@@ -149,6 +155,7 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
         mRestaurant = restaurant;
         mAddress.setText(mRestaurant.mAddress);
         mAdapter.setItems(restaurant.mMenus);
+        mRestaurantsPresenter.startChangeImageTimer();
     }
 
     @Override
@@ -159,5 +166,18 @@ public class RestaurantActivity extends BaseActivity implements RestaurantsView 
     @Override
     public void showError() {
         mEmptyLayout.setState(EmptyLayout.State.ERROR, R.string.unexpected_error);
+    }
+
+    @Override
+    public void intervalUpdate() {
+        int firstIndex = mLayoutManager.findFirstVisibleItemPosition();
+        int lastIndex = mLayoutManager.findLastVisibleItemPosition();
+        mAdapter.timeUpdate(firstIndex, lastIndex);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRestaurantsPresenter.destroySubscriptions();
     }
 }
